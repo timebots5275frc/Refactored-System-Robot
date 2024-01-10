@@ -55,6 +55,5 @@ public class SwerveDrive extends SubsystemBase {
     // imuADIS16470.getXComplementaryAngle() );
 
     return heading; // TODO Lucas //.minus(new Rotation2d(this.autoTurnOffsetRadians)); // radians
-
-}
+  }
 }
