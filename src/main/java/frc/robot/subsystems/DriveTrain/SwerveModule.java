@@ -2,8 +2,8 @@ package frc.robot.subsystems.DriveTrain;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkLowLevel;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,7 +11,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.ctre.phoenix.sensors.*;
+import com.ctre.phoenix6.hardware.CANcoder;
+
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -20,19 +21,18 @@ public class SwerveModule {
     private CANSparkMax steerMotor;
     private RelativeEncoder driveNEOMotorEncoder; // NEO build-in Encoder
 
-    private CANCoder steerAngleEncoder;
+    private CANcoder steerAngleEncoder;
 
     private PIDController steerAnglePID;
-    private SparkMaxPIDController steerMotorVelocityPID;
-    private SparkMaxPIDController driveMotorVelocityPID;
-    private SwerveModulePosition modulePosition = new SwerveModulePosition();
+    private SparkPIDController steerMotorVelocityPID;
+    private SparkPIDController driveMotorVelocityPID;
 
     public SwerveModule(int driveMotorID, int steerMotorID, int steerEncoderId) {
 
-        driveMotor = new CANSparkMax(driveMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        steerMotor = new CANSparkMax(steerMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        driveMotor = new CANSparkMax(driveMotorID, CANSparkLowLevel.MotorType.kBrushless);
+        steerMotor = new CANSparkMax(steerMotorID, CANSparkLowLevel.MotorType.kBrushless);
 
-        steerAngleEncoder = new CANCoder(steerEncoderId);
+        steerAngleEncoder = new CANcoder(steerEncoderId);
 
         driveNEOMotorEncoder = driveMotor.getEncoder();
         driveNEOMotorEncoder.setPositionConversionFactor(DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE);
@@ -71,7 +71,7 @@ public class SwerveModule {
      */
     public SwerveModuleState getState() {
         double driveSpeed = speedFromDriveRpm(driveNEOMotorEncoder.getVelocity());
-        double steerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition());
+        double steerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValue());
 
         return new SwerveModuleState(driveSpeed, new Rotation2d(steerAngleRadians));
     }
@@ -83,24 +83,14 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean logValues, String name) {
 
-        double curSteerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition());
+        double curSteerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValue());
 
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(curSteerAngleRadians));
 
         // The output of the steerAnglePID becomes the steer motor rpm reference.
-        double steerMotorRpm = steerAnglePID.calculate(steerAngleEncoder.getAbsolutePosition(),
+        double steerMotorRpm = steerAnglePID.calculate(steerAngleEncoder.getAbsolutePosition().getValue(),
                 state.angle.getDegrees());
-
-        if (logValues) {
-            SmartDashboard.putNumber(name + " Drive OutputCurrent", driveMotor.getOutputCurrent());
-            // SmartDashboard.putNumber("Drive OutputCurrent", driveMotor.current());
-
-            SmartDashboard.putNumber(name + " steerAngleEncoder.getAbsolutePosition()",
-                    steerAngleEncoder.getAbsolutePosition());
-            SmartDashboard.putNumber(name + " SteerMotorRpmCommand", steerMotorRpm);
-            SmartDashboard.putNumber(name + " SteerPIDdegrees", state.angle.getDegrees());
-        }
 
         steerMotorVelocityPID.setReference(steerMotorRpm, CANSparkMax.ControlType.kVelocity);
 
@@ -140,7 +130,6 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition() {
         double distance = driveNEOMotorEncoder.getPosition();
-        return new SwerveModulePosition(distance, new Rotation2d(Math.toRadians(steerAngleEncoder.getAbsolutePosition())));
+        return new SwerveModulePosition(distance, new Rotation2d(Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValue())));
     }
-
 }
