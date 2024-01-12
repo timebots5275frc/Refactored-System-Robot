@@ -44,21 +44,15 @@ public class TeleopJoystickDrive extends Command {
     @Override
     public void execute() {
 
-        double xSpeed = this.smartJoystick(driveStick.getY() * -1, Constants.ControllerConstants.DEADZONE_DRIVE)
-                * Constants.DriveConstants.MAX_DRIVE_SPEED;
-
-        double ySpeed = this.smartJoystick(driveStick.getX() * -1, Constants.ControllerConstants.DEADZONE_DRIVE)
-                * Constants.DriveConstants.MAX_DRIVE_SPEED;
-
-        double rotRate = this.smartJoystick(driveStick.getTwist() * -1, Constants.ControllerConstants.DEADZONE_STEER)
-                * Constants.DriveConstants.MAX_TWIST_RATE;
+        double xSpeed = this.smartJoystick(driveStick.getY() * -1, Constants.ControllerConstants.DEADZONE_DRIVE) * Constants.DriveConstants.MAX_DRIVE_SPEED;
+        double ySpeed = this.smartJoystick(driveStick.getX() * -1, Constants.ControllerConstants.DEADZONE_DRIVE) * Constants.DriveConstants.MAX_DRIVE_SPEED;
+        double rotRate = this.smartJoystick(driveStick.getTwist() * -1, Constants.ControllerConstants.DEADZONE_STEER) * Constants.DriveConstants.MAX_TWIST_RATE;
 
         double throttle = (-driveStick.getThrottle() + 1) / 2; // between 0 and 1 = 0% and 100%
 
         xSpeed *= throttle;
         ySpeed *= throttle;
         rotRate *= throttle;
-        // rotRate *= 0;
 
         SmartDashboard.putNumber("Throttle teleJoy", throttle);
 
