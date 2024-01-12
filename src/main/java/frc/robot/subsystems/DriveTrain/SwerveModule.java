@@ -38,9 +38,7 @@ public class SwerveModule {
         driveNEOMotorEncoder.setPositionConversionFactor(DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE);
 
         /// PID Controllers ///
-
-        steerAnglePID = new PIDController(DriveConstants.PID_Encoder_Steer.P, DriveConstants.PID_Encoder_Steer.I,
-                DriveConstants.PID_Encoder_Steer.D);
+        steerAnglePID = new PIDController(DriveConstants.PID_Encoder_Steer.P, DriveConstants.PID_Encoder_Steer.I, DriveConstants.PID_Encoder_Steer.D);
         steerAnglePID.enableContinuousInput(-180, 180);
 
         // Get the motor controller PIDs
@@ -54,6 +52,7 @@ public class SwerveModule {
         steerMotorVelocityPID.setIZone(DriveConstants.PID_SparkMax_Steer.IZ);
         steerMotorVelocityPID.setFF(DriveConstants.PID_SparkMax_Steer.KFF);
         steerMotorVelocityPID.setOutputRange(-1, 1);
+
         // set PID coefficients
         driveMotorVelocityPID.setP(DriveConstants.PID_SparkMax_Drive.P);
         driveMotorVelocityPID.setI(DriveConstants.PID_SparkMax_Drive.I);
@@ -61,7 +60,6 @@ public class SwerveModule {
         driveMotorVelocityPID.setIZone(DriveConstants.PID_SparkMax_Drive.IZ);
         driveMotorVelocityPID.setFF(DriveConstants.PID_SparkMax_Drive.KFF);
         driveMotorVelocityPID.setOutputRange(-1, 1);
-
     }
 
     /**

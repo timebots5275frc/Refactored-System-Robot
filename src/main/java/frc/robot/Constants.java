@@ -11,6 +11,15 @@ import frc.robot.CustomTypes.PID_Values;
       public static final int kDriverControllerPort = 0;
     }
 
+    public static final class ControllerConstants {
+      public static final int DRIVER_STICK_CHANNEL = 0;
+      public static final int AUX_STICK_CHANNEL = 1;
+      public static final int XBOXCONTROLLER_CHANNEL = 3;
+
+      public static final double DEADZONE_DRIVE = 0.1;
+      public static final double DEADZONE_STEER = 0.3;
+    }
+
     public static final class DriveConstants {
 
       // Drivetrain Motor IDs
