@@ -1,8 +1,7 @@
 package frc.robot.CustomTypes.Math;
 
 public class Vector2{
-    public double x;
-    public double y;
+    public double x, y;
 
     public static Vector2 zero = new Vector2(0, 0);
 
@@ -14,12 +13,7 @@ public class Vector2{
 
     public double magnitude()
     {
-        return Vector2.distance(x, y, 0, 0);
-    }
-
-    public static double distance(double x1, double y1, double x2, double y2)
-    {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        return Vector2.distance(this, zero);
     }
 
     public static double distance(Vector2 a, Vector2 b)
@@ -29,8 +23,7 @@ public class Vector2{
 
     public Vector2 normalized()
     {
-        double distance = distance(0, 0, x, y);
-        return this.divideBy(distance);
+        return this.divideBy(this.magnitude());
     }
 
     public static Vector2 lerp(Vector2 a, Vector2 b, double percent)
