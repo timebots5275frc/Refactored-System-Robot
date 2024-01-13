@@ -10,14 +10,14 @@ import frc.robot.CustomTypes.Math.Vector3;
 
 public class Vision extends SubsystemBase {
 
-  int aprilTagID = -1;
-  double horizontalOffsetFromTarget;
+  private int aprilTagID = -1;
+  private double horizontalOffsetFromTarget;
 
-  final int valuesToAvg = 10;
-  long valuesGotten = 0; // yucky
+  private final int valuesToAvg = 10;
+  private long valuesGotten = 0; // yucky
 
-  Vector3 avgTargetPosInRobotSpace;
-  Vector3[] targetPosInRobotSpaceValues = new Vector3[valuesToAvg]; // controls how many values are averaged
+  private Vector3 avgTargetPosInRobotSpace;
+  private Vector3[] targetPosInRobotSpaceValues = new Vector3[valuesToAvg]; // controls how many values are averaged
 
   /** Creates a new Vision. */
   public Vision() {}
