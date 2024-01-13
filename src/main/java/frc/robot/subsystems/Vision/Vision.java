@@ -10,15 +10,26 @@ import frc.robot.CustomTypes.Math.Vector3;
 
 public class Vision extends SubsystemBase {
 
+  int aprilTagID = -1;
+  double horizontalOffsetFromTarget;
+
+  final int valuesToAvg = 10;
+  long valuesGotten = 0; // yucky
+
   Vector3 avgTargetPosInRobotSpace;
-  Vector3[] targetPosInRobotSpaceValues = new Vector3[10]; // controls how many values are averaged
+  Vector3[] targetPosInRobotSpaceValues = new Vector3[valuesToAvg]; // controls how many values are averaged
 
   /** Creates a new Vision. */
   public Vision() {}
 
   @Override
   public void periodic() {
+    aprilTagID = (int)NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(-1.0);
+    horizontalOffsetFromTarget = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
     CalculateTargetPosInRobotSpace();
+
+    valuesGotten++;
   }
 
   void CalculateTargetPosInRobotSpace()
@@ -49,4 +60,14 @@ public class Vision extends SubsystemBase {
 
     return out.divideBy(array.length);
   }
+
+  public boolean hasValidData()
+  {
+    return aprilTagID != -1 && valuesGotten > valuesToAvg;
+  }
+
+  // Getter methods //
+  public int AprilTagID() { return aprilTagID; }
+  public Vector3 TargetPosInRobotSpace() { return avgTargetPosInRobotSpace; }
+  public double HorizontalOffsetFromTarget() { return horizontalOffsetFromTarget; }
 }
