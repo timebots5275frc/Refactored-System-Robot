@@ -12,6 +12,13 @@ public class Vector3 {
         this.z = z;
     }
 
+    public Vector3()
+    { 
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
     public static double distance(Vector3 a, Vector3 b)
     {
         return Math.sqrt(((b.x - a.x) * (b.x - a.x)) + ((b.y - a.y) * (b.y - a.y)) + ((b.z - a.z) * (b.z - a.z)));

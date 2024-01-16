@@ -27,15 +27,15 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveDrive extends SubsystemBase {
 
-  private final Translation2d leftFrontWheelLocation = new Translation2d(DriveConstants.LEFT_FRONT_WHEEL_X, DriveConstants.LEFT_FRONT_WHEEL_Y);
-  private final Translation2d rightFrontWheelLocation = new Translation2d(DriveConstants.RIGHT_FRONT_WHEEL_X, DriveConstants.RIGHT_FRONT_WHEEL_Y);    
-  private final Translation2d rightRearWheelLocation = new Translation2d(DriveConstants.RIGHT_REAR_WHEEL_X, DriveConstants.RIGHT_REAR_WHEEL_Y);
-  private final Translation2d leftRearWheelLocation = new Translation2d(DriveConstants.LEFT_REAR_WHEEL_X, DriveConstants.LEFT_REAR_WHEEL_Y);
+  private final Translation2d leftFrontWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_FRONT_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_FRONT_WHEEL_Y);
+  private final Translation2d rightFrontWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_FRONT_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_FRONT_WHEEL_Y);    
+  private final Translation2d rightRearWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_REAR_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_REAR_WHEEL_Y);
+  private final Translation2d leftRearWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_REAR_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_REAR_WHEEL_Y);
 
-  private final SwerveModule leftFrontSwerveModule = new SwerveModule(DriveConstants.LEFT_FRONT_DRIVE_MOTOR_ID, DriveConstants.LEFT_FRONT_STEER_MOTOR_ID, DriveConstants.LEFT_FRONT_STEER_ENCODER_ID);
-  private final SwerveModule rightFrontSwerveModule = new SwerveModule(DriveConstants.RIGHT_FRONT_DRIVE_MOTOR_ID, DriveConstants.RIGHT_FRONT_STEER_MOTOR_ID, DriveConstants.RIGHT_FRONT_STEER_ENCODER_ID);
-  private final SwerveModule rightRearSwerveModule = new SwerveModule(DriveConstants.RIGHT_REAR_DRIVE_MOTOR_ID, DriveConstants.RIGHT_REAR_STEER_MOTOR_ID, DriveConstants.RIGHT_REAR_STEER_ENCODER_ID);
-  private final SwerveModule leftRearSwerveModule = new SwerveModule(DriveConstants.LEFT_REAR_DRIVE_MOTOR_ID, DriveConstants.LEFT_REAR_STEER_MOTOR_ID, DriveConstants.LEFT_REAR_STEER_ENCODER_ID);
+  private final SwerveModule leftFrontSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_STEER_ENCODER_ID);
+  private final SwerveModule rightFrontSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_STEER_ENCODER_ID);
+  private final SwerveModule rightRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_ENCODER_ID);
+  private final SwerveModule leftRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_ENCODER_ID);
   
   Pigeon2 pigeon2Gyro = new Pigeon2(DriveConstants.PIGEON_2_ID);
 

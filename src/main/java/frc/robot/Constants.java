@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.CustomTypes.PID_Values;
+import frc.robot.CustomTypes.SwerveCanIDs;
+import frc.robot.CustomTypes.SwerveModuleLocations;
 
   public final class Constants {
     public static class OperatorConstants {
@@ -21,24 +23,10 @@ import frc.robot.CustomTypes.PID_Values;
     }
 
     public static final class DriveConstants {
+      // Drivetrain Motor and Encoder IDs
 
-      // Drivetrain Motor IDs
-      // There are the CANBus IDs of the SparkMax controllers
-      public static final int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-      public static final int LEFT_FRONT_STEER_MOTOR_ID = 2;
-      public static final int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
-      public static final int RIGHT_FRONT_STEER_MOTOR_ID = 4;
-      public static final int LEFT_REAR_DRIVE_MOTOR_ID = 5;
-      public static final int LEFT_REAR_STEER_MOTOR_ID = 6;
-      public static final int RIGHT_REAR_DRIVE_MOTOR_ID = 7;
-      public static final int RIGHT_REAR_STEER_MOTOR_ID = 8;
-
-      // Drivetrain Encoder IDs
-      // These are the CANBus IDs of the CTRE CANCoders
-      public static final int LEFT_FRONT_STEER_ENCODER_ID = 10;
-      public static final int RIGHT_FRONT_STEER_ENCODER_ID = 11;
-      public static final int LEFT_REAR_STEER_ENCODER_ID = 12;
-      public static final int RIGHT_REAR_STEER_ENCODER_ID = 13;
+      public static final SwerveCanIDs Robot2023SwerveCAN = new SwerveCanIDs(1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13);
+      public static final SwerveCanIDs CaidBotSwerveCAN = new SwerveCanIDs(1, 2, 5, 6, 3, 4, 7, 8, 10, 12, 11, 13);
 
       // These constants define the location of the wheels from the center of the
       // robot.
@@ -47,14 +35,25 @@ import frc.robot.CustomTypes.PID_Values;
       // positive Z direction,
       // Middle finger points left in the positive Y direction.
 
-      public static final double LEFT_FRONT_WHEEL_X = (/* inside chassis point */11 - /* wheel center offset */2.25) * 0.0254; // meters
-      public static final double LEFT_FRONT_WHEEL_Y = (14 - 2.25) * 0.0254; // meters .5969
-      public static final double RIGHT_FRONT_WHEEL_X = (11 - 2.25) * 0.0254; // meters
-      public static final double RIGHT_FRONT_WHEEL_Y = (-14 + 2.25) * 0.0254; // meters
-      public static final double RIGHT_REAR_WHEEL_X = (-11 + 2.25) * 0.0254; // meters
-      public static final double RIGHT_REAR_WHEEL_Y = (-14 + 2.25) * 0.0254; // meters
-      public static final double LEFT_REAR_WHEEL_X = (-11 + 2.25) * 0.0254; // meters
-      public static final double LEFT_REAR_WHEEL_Y = (14 - 2.25) * 0.0254; // meters
+      public static final SwerveModuleLocations Robot2023SwerveLocations = new SwerveModuleLocations(
+        (11 - 2.25) * 0.0254, // LEFT_FRONT_WHEEL_X
+        (14 - 2.25) * 0.0254, // LEFT_FRONT_WHEEL_Y
+        (11 - 2.25) * 0.0254, // RIGHT_FRONT_WHEEL_X
+        (-14 + 2.25) * 0.0254, // RIGHT_FRONT_WHEEL_Y
+        (-11 + 2.25) * 0.0254, // RIGHT_REAR_WHEEL_X
+        (-14 + 2.25) * 0.0254, // RIGHT_REAR_WHEEL_Y
+        (-11 + 2.25) * 0.0254, // LEFT_REAR_WHEEL_X
+        (14 - 2.25) * 0.0254); //LEFT_REAR_WHEEL_Y
+
+      public static final SwerveModuleLocations CaidBotSwerveLocations = new SwerveModuleLocations(
+        11.75 * 0.0254, // LEFT_FRONT_WHEEL_X
+        11.75 * 0.0254, // LEFT_FRONT_WHEEL_Y
+        11.75 * 0.0254, // RIGHT_FRONT_WHEEL_X
+        -11.75 * 0.0254, // RIGHT_FRONT_WHEEL_Y
+        -11.75 * 0.0254, // RIGHT_REAR_WHEEL_X
+        -11.75 * 0.0254, // RIGHT_REAR_WHEEL_Y
+        -11.75 * 0.0254, // LEFT_REAR_WHEEL_X
+        11.75 * 0.0254); //LEFT_REAR_WHEEL_Y
 
       public static final double WHEEL_RADIUS = 2.0 * 0.0254; // meters * 0.98
       public static final double WHEEL_CIRCUMFERENCE = 2.0 * Math.PI * WHEEL_RADIUS; // meters/revolution
@@ -90,5 +89,10 @@ import frc.robot.CustomTypes.PID_Values;
       public static final PID_Values PID_SparkMax_Drive = new PID_Values(0.0003, 0, 0, 0, 0.00016);
       public static final int PIGEON_IMU_ID = 9;
       public static final int PIGEON_2_ID = 9;
+
+      // CHANGE TO SET CURRENT ROBOT INFO
+
+      public static final SwerveCanIDs ROBOT_SWERVE_CAN = CaidBotSwerveCAN;
+      public static final SwerveModuleLocations ROBOT_SWERVE_LOCATIONS = CaidBotSwerveLocations;
   }
 }
