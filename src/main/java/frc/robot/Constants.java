@@ -95,4 +95,34 @@ import frc.robot.CustomTypes.SwerveModuleLocations;
       public static final SwerveCanIDs ROBOT_SWERVE_CAN = CaidBotSwerveCAN;
       public static final SwerveModuleLocations ROBOT_SWERVE_LOCATIONS = CaidBotSwerveLocations;
   }
+
+  public static final class VisionConstants {
+    public enum AprilTag
+    {
+      ba_source_left(1, "BA Source left"),
+      ba_source_right(2, "BA Source right"),
+      ra_speaker_aux(3, "RA Speaker auxillary"),
+      ra_speaker_main(4, "RA Speaker main"),
+      ra_amplifier(5, "RA Amplifier"),
+      ba_amplifier(6, "BA Amplifier"),
+      ba_speaker_main(7, "BA Speaker main"),
+      ba_speaker_aux(8, "BA Speaker auxillary"),
+      ra_source_right(9, "RA Source right"),
+      ra_source_left(10, "RA Source left"),
+      ra_core_scoring_table(11, "RA Core scoring table side"),
+      ra_core_opp_scoring_table(12, "RA Core opposite scoring table side"),
+      ra_core_mid(13, "RA Core middle side"),
+      ba_core_mid(14, "BA Core middle side"),
+      ba_core_opp_scoring_table(15, "BA Core opposite scoring table side"),
+      ba_core_scoring_table(16, "BA Core scoring table side");
+
+      int id;
+      String name;
+      private AprilTag(int id, String name)
+      {
+        this.id = id;
+        this.name = name;
+      }
+    }
+  }
 }
