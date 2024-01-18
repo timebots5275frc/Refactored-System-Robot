@@ -8,24 +8,24 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CustomTypes.Math.Vector3;
+import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
 
   private int aprilTagID = -1;
   private double horizontalOffsetFromTarget;
 
-  private final int valuesToAvg = 3;
   private long valuesGotten = 0; // yucky
 
   private Vector3 avgTargetPosInRobotSpace;
-  private Vector3[] targetPosInRobotSpaceValues = new Vector3[valuesToAvg]; // controls how many values are averaged
+  private Vector3[] targetPosInRobotSpaceValues = new Vector3[VisionConstants.VALUES_TO_AVERAGE]; // controls how many values are averaged
 
   /** Creates a new Vision. */
   public Vision() 
   {
     VisionDriveCalculator.SetVisionReference(this);
 
-    for(int i = 0; i < valuesToAvg; i++)
+    for(int i = 0; i < VisionConstants.VALUES_TO_AVERAGE; i++)
     {
       targetPosInRobotSpaceValues[i] = Vector3.zero;
     }
@@ -73,7 +73,7 @@ public class Vision extends SubsystemBase {
 
   public boolean hasValidData()
   {
-    return aprilTagID != -1 && valuesGotten > valuesToAvg;
+    return aprilTagID != -1 && valuesGotten > VisionConstants.VALUES_TO_AVERAGE;
   }
 
   void LogData()

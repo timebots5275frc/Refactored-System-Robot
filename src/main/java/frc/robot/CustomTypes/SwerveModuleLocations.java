@@ -1,5 +1,9 @@
 package frc.robot.CustomTypes;
 
+// These constants define the location of the wheels from the center of the robot.
+// These coordinates are determined by the right hand rule.
+// Index finger points in the forward X direction, Thumb points up in the positive Z direction, Middle finger points left in the positive Y direction.
+
 public class SwerveModuleLocations {
     // IN METERS
     public final double LEFT_FRONT_WHEEL_X;

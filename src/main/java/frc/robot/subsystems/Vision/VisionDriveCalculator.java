@@ -1,7 +1,5 @@
 package frc.robot.subsystems.Vision;
 
-import frc.robot.CustomTypes.Math.Vector2;
-
 public class VisionDriveCalculator {
     static Vision vision;
 
@@ -11,7 +9,7 @@ public class VisionDriveCalculator {
     {
         final double rotSpeed = .01f;
 
-        if (vision.AprilTagID() != -1 && false)
+        if (vision.AprilTagID() != -1)
         {
             return Math.signum(vision.HorizontalOffsetFromTarget()) * rotSpeed;
         }
