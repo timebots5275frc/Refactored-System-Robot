@@ -9,11 +9,6 @@ public class VisionDriveCalculator {
     {
         final double rotSpeed = .01f;
 
-        if (vision.AprilTagID() != -1)
-        {
-            return Math.signum(vision.HorizontalOffsetFromTarget()) * rotSpeed;
-        }
-
-        return 0;
+        return Math.signum(vision.HorizontalOffsetFromTarget()) * rotSpeed;
     }
 }

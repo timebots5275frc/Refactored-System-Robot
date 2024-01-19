@@ -7,16 +7,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
+import frc.robot.subsystems.Vision.Vision;
 import frc.robot.subsystems.Vision.VisionDriveCalculator;
 
 public class VisionRotateTowardAprilTag extends Command {
 
   SwerveDrive swerveDrive;
+  Vision vision;
   Joystick driveStick;
 
   /** Creates a new VisionRotateTowardAprilTag. */
-  public VisionRotateTowardAprilTag(SwerveDrive swerveDrive, Joystick driveStick) {
+  public VisionRotateTowardAprilTag(SwerveDrive swerveDrive, Vision vision, Joystick driveStick) {
     this.swerveDrive = swerveDrive;
+    this.vision = vision;
     this.driveStick = driveStick;
 
     addRequirements(swerveDrive);
@@ -29,7 +32,15 @@ public class VisionRotateTowardAprilTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerveDrive.drive(0, 0, VisionDriveCalculator.rotateTowardsTarget(), false);
+
+    if(vision.AprilTagID() != -1)
+    {
+      swerveDrive.drive(0, 0, VisionDriveCalculator.rotateTowardsTarget(), false);
+    }
+    else
+    {
+      swerveDrive.drive(0, 0, 0, false);
+    }
   }
 
   // Called once the command ends or is interrupted.
