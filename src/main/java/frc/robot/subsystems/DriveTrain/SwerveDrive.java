@@ -5,50 +5,65 @@
 package frc.robot.subsystems.DriveTrain;
 
 import java.util.List;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveDrive extends SubsystemBase {
 
-  private final Translation2d leftFrontWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_FRONT_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_FRONT_WHEEL_Y);
-  private final Translation2d rightFrontWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_FRONT_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_FRONT_WHEEL_Y);    
-  private final Translation2d rightRearWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_REAR_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_REAR_WHEEL_Y);
-  private final Translation2d leftRearWheelLocation = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_REAR_WHEEL_X, DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_REAR_WHEEL_Y);
+    private final Translation2d leftFrontWheelLoc = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_FRONT_WHEEL_X,
+            DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_FRONT_WHEEL_Y);
+    private final Translation2d rightFrontWheelLoc = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_FRONT_WHEEL_X,
+            DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_FRONT_WHEEL_Y);
+    private final Translation2d rightRearWheelLoc = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_REAR_WHEEL_X,
+            DriveConstants.ROBOT_SWERVE_LOCATIONS.RIGHT_REAR_WHEEL_Y);
+    private final Translation2d leftRearWheelLoc = new Translation2d(DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_REAR_WHEEL_X,
+            DriveConstants.ROBOT_SWERVE_LOCATIONS.LEFT_REAR_WHEEL_Y);
 
-  private final SwerveModule leftFrontSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_STEER_ENCODER_ID);
-  private final SwerveModule rightFrontSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_STEER_ENCODER_ID);
-  private final SwerveModule rightRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_ENCODER_ID);
-  private final SwerveModule leftRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_ENCODER_ID);
-  
-  //Pigeon2 pigeon2Gyro = new Pigeon2(DriveConstants.PIGEON_2_ID);
-  PigeonIMU pigeonGyro = new PigeonIMU(DriveConstants.PIGEON_IMU_ID);
+    public final SwerveModule leftFrontSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_DRIVE_MOTOR_ID,
+            DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_FRONT_STEER_ENCODER_ID);
+    private final SwerveModule rightFrontSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_DRIVE_MOTOR_ID,
+            DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_FRONT_STEER_ENCODER_ID);
+    private final SwerveModule rightRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_DRIVE_MOTOR_ID,
+            DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_ENCODER_ID);
+    private final SwerveModule leftRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_DRIVE_MOTOR_ID,
+            DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_ENCODER_ID);
 
-public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontWheelLocation, rightFrontWheelLocation, rightRearWheelLocation, leftRearWheelLocation);
+    // private final AnalogGyro m_gyro = new AnalogGyro(0);
+
+    //public final GyroWrapperADIS16470_IMU imuADIS16470 = new GyroWrapperADIS16470_IMU();
+
+    PigeonIMU gyroPigeonIMU = new PigeonIMU(Constants.DriveConstants.PIGEON_IMU_ID);
+    Pigeon2 gyroPigeon2 = new Pigeon2(Constants.DriveConstants.PIGEON_2_ID);
+
+    public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontWheelLoc, rightFrontWheelLoc,
+            rightRearWheelLoc, leftRearWheelLoc);
     
-    public final SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {leftFrontSwerveModule.getPosition(), rightFrontSwerveModule.getPosition(), rightRearSwerveModule.getPosition(), leftFrontSwerveModule.getPosition()};
+    public final SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {leftFrontSwerveModule.getPosition(), rightFrontSwerveModule.getPosition(),
+            rightRearSwerveModule.getPosition(), leftFrontSwerveModule.getPosition()};
 
     private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(kinematics, this.getHeading(), modulePositions);
 
-    public void Drivetrain() {
-        System.out.println("SwerveDrive.java started...");
+    public SwerveDrive() {
+        System.out.println("DriveTrain (:");
+
     }
 
     @Override
@@ -78,7 +93,14 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
         SmartDashboard.putString("odometry getRotation",
                 m_odometry.getPoseMeters().getRotation().toString());
 
+        // SmartDashboard.putNumber("LeftFrontSpeed",
+        // swerveModuleStates[0].speedMetersPerSecond );
+        // SmartDashboard.putNumber("LeftFrontAngle",
+        // swerveModuleStates[0].angle.getDegrees() );
+
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_DRIVE_SPEED);
+        // SmartDashboard.putNumber("LeftFrontSpeedNorm",
+        // swerveModuleStates[0].speedMetersPerSecond );
 
         leftFrontSwerveModule.setDesiredState(swerveModuleStates[0], true, "LF");
         rightFrontSwerveModule.setDesiredState(swerveModuleStates[1], true, "RF");
@@ -98,6 +120,7 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
     /** Updates the field relative position of the robot. */
     public void updateOdometry() {
         m_odometry.update(this.getHeading(), modulePositions);
+
     }
 
     /**
@@ -118,9 +141,24 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
         m_odometry.resetPosition(pose.getRotation(), modulePositions, pose); // imuADIS16470.getRotation2d()
     }
 
-    public void resetPigeon() {
-        //pigeon2Gyro.setYaw(0);
-        pigeonGyro.setYaw(0);
+    /** Zeroes the heading of the robot. */
+    // public void resetADIS16470() {
+    // System.out.println("resetADIS16470");
+    // imuADIS16470.reset();
+    // }
+
+    /** calibrate the heading of the robot. */
+    // public void calibrateADIS16470() {
+    // System.out.println("calibrateADIS16470");
+    // imuADIS16470.calibrate();
+    // }
+
+    public void calibratePigeonIMU() {
+
+    }
+
+    public void resetPIgeonIMU() {
+        gyroPigeon2.setYaw(0);
     }
 
     /**
@@ -131,8 +169,7 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
      */
     public Rotation2d getHeading() {
 
-        //Rotation2d heading = Rotation2d.fromDegrees(pigeon2Gyro.getYaw().getValueAsDouble());
-        Rotation2d heading = Rotation2d.fromDegrees(pigeonGyro.getYaw());
+        Rotation2d heading = Rotation2d.fromDegrees(gyroPigeon2.getYaw().getValueAsDouble());
 
         // System.out.println( "getYComplementaryAngle = " + heading );
         // System.out.println( "getXComplementaryAngle = " +
@@ -169,4 +206,84 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
         Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(list, config);
         return exampleTrajectory;
     }
+
+    /**
+     * ! We might need this for the Auto. -Lucas
+     * 
+     * // TODO: Find out if we still need this. -Lucas
+     * // private double autoTurnOffsetRadians = 0;
+     * 
+     * 
+     * public void setAutoTurnOffsetRadians(double angleInRadians) { // TODO -Lucas
+     * System.out.println("angleInRadians = " + angleInRadians);
+     * this.autoTurnOffsetRadians = angleInRadians;
+     * }
+     * 
+     * 
+     * protected static Trajectory loadTrajectory(String trajectoryName) throws
+     * IOException {
+     * return TrajectoryUtil.fromPathweaverJson(
+     * Filesystem.getDeployDirectory().toPath().resolve(Paths.get("output",
+     * trajectoryName + ".wpilib.json")));
+     * }
+     * 
+     * public Trajectory loadTrajectoryFromFile(String filename) {
+     * try {
+     * return loadTrajectory(filename);
+     * } catch (IOException e) {
+     * DriverStation.reportError("Failed to load auto trajectory: " + filename,
+     * false);
+     * return new Trajectory();
+     * }
+     * }
+     * 
+     * 
+     * 
+     * public static Trajectory generateTrajectory(TrajectoryConfig config, Pose2d
+     * startingPose2d,
+     * List<Translation2d> list) {
+     * // Pose2d offset = new Pose2d(startingPose2d.getX(), startingPose2d.getY(),
+     * // startingPose2d.getRotation());
+     * 
+     * ArrayList<Translation2d> newList = new ArrayList<Translation2d>();
+     * 
+     * for (int i = 0; i < list.size(); i++) {
+     * // double x = (list.get(i).getX() - startingPose2d.getX()) * 30 * .0254;
+     * // double y = (list.get(i).getY() - startingPose2d.getY()) * 30 * .0254;
+     * 
+     * double x = list.get(i).getX() * 30 * .0254;
+     * double y = list.get(i).getY() * 30 * .0254;
+     * newList.add(new Translation2d(x, y));
+     * System.out.println("x = " + x + " y = " + y);
+     * }
+     * 
+     * Translation2d end2d = newList.remove(newList.size() - 1);
+     * 
+     * Pose2d end = new Pose2d(end2d.getX(), end2d.getY(),
+     * startingPose2d.getRotation());
+     * 
+     * return TrajectoryGenerator.generateTrajectory(new
+     * Pose2d(startingPose2d.getX() * 30 * .0254,
+     * startingPose2d.getY() * 30 * .0254, startingPose2d.getRotation()), list, end,
+     * config);
+     * 
+     * // Pose2d offset = new Pose2d(startingPose2d.getX(), startingPose2d.getY(),
+     * // startingPose2d.getRotation());
+     * // ArrayList<Pose2d> newList = new ArrayList<Pose2d>();
+     * // newList.add(list.get(0));
+     * 
+     * // for (int i = 1; i < list.size(); i++) {
+     * // double x = (list.get(i).getX() - offset.getX()) * 30 * .0254;
+     * // double y = (list.get(i).getY() - offset.getY()) * 30 * .0254;
+     * // newList.add(new Pose2d(x, y, list.get(i).getRotation()));
+     * // System.out.println("x = " + x + " y = " + y);
+     * // }
+     * 
+     * // Trajectory exampleTrajeactory =
+     * // TrajectoryGenerator.generateTrajectory(newList, config);
+     * 
+     * // return exampleTrajeactory;
+     * }
+     */
+
 }

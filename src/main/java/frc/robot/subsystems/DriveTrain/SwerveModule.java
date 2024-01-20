@@ -11,8 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.ctre.phoenix6.hardware.CANcoder;
-
+import com.ctre.phoenix6.hardware.*;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -26,6 +25,7 @@ public class SwerveModule {
     private PIDController steerAnglePID;
     private SparkPIDController steerMotorVelocityPID;
     private SparkPIDController driveMotorVelocityPID;
+    private SwerveModulePosition modulePosition = new SwerveModulePosition();
 
     public SwerveModule(int driveMotorID, int steerMotorID, int steerEncoderId) {
 
@@ -38,7 +38,9 @@ public class SwerveModule {
         driveNEOMotorEncoder.setPositionConversionFactor(DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE);
 
         /// PID Controllers ///
-        steerAnglePID = new PIDController(DriveConstants.PID_Encoder_Steer.P, DriveConstants.PID_Encoder_Steer.I, DriveConstants.PID_Encoder_Steer.D);
+
+        steerAnglePID = new PIDController(DriveConstants.PID_Encoder_Steer.P, DriveConstants.PID_Encoder_Steer.I,
+                DriveConstants.PID_Encoder_Steer.D);
         steerAnglePID.enableContinuousInput(-180, 180);
 
         // Get the motor controller PIDs
@@ -52,7 +54,6 @@ public class SwerveModule {
         steerMotorVelocityPID.setIZone(DriveConstants.PID_SparkMax_Steer.IZ);
         steerMotorVelocityPID.setFF(DriveConstants.PID_SparkMax_Steer.KFF);
         steerMotorVelocityPID.setOutputRange(-1, 1);
-
         // set PID coefficients
         driveMotorVelocityPID.setP(DriveConstants.PID_SparkMax_Drive.P);
         driveMotorVelocityPID.setI(DriveConstants.PID_SparkMax_Drive.I);
@@ -60,6 +61,7 @@ public class SwerveModule {
         driveMotorVelocityPID.setIZone(DriveConstants.PID_SparkMax_Drive.IZ);
         driveMotorVelocityPID.setFF(DriveConstants.PID_SparkMax_Drive.KFF);
         driveMotorVelocityPID.setOutputRange(-1, 1);
+
     }
 
     /**
@@ -69,7 +71,7 @@ public class SwerveModule {
      */
     public SwerveModuleState getState() {
         double driveSpeed = speedFromDriveRpm(driveNEOMotorEncoder.getVelocity());
-        double steerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValue());
+        double steerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValueAsDouble());
 
         return new SwerveModuleState(driveSpeed, new Rotation2d(steerAngleRadians));
     }
@@ -79,22 +81,32 @@ public class SwerveModule {
      *
      * @param desiredState Desired state with speed and angle.
      */
-    public void setDesiredState(SwerveModuleState desiredState, boolean logValues, String name) {
+    public void setDesiredState(SwerveModuleState desiredState, boolean logit, String name) {
 
-        double curSteerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValue());
+        double curSteerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValueAsDouble());
 
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(curSteerAngleRadians));
 
         // The output of the steerAnglePID becomes the steer motor rpm reference.
-        double steerMotorRpm = steerAnglePID.calculate(steerAngleEncoder.getAbsolutePosition().getValue(),
+        double steerMotorRpm = steerAnglePID.calculate(steerAngleEncoder.getAbsolutePosition().getValueAsDouble(),
                 state.angle.getDegrees());
+
+        if (logit) {
+            SmartDashboard.putNumber(name + " Drive OutputCurrent", driveMotor.getOutputCurrent());
+            // SmartDashboard.putNumber("Drive OutputCurrent", driveMotor.current());
+
+            SmartDashboard.putNumber(name + " steerAngleEncoder.getAbsolutePosition()",
+                    steerAngleEncoder.getAbsolutePosition().getValueAsDouble());
+            SmartDashboard.putNumber(name + " SteerMotorRpmCommand", steerMotorRpm);
+            SmartDashboard.putNumber(name + " SteerPIDdegrees", state.angle.getDegrees());
+        }
 
         steerMotorVelocityPID.setReference(steerMotorRpm, CANSparkMax.ControlType.kVelocity);
 
         double driveMotorRpm = driveRpmFromSpeed(state.speedMetersPerSecond);
 
-        if (logValues) {
+        if (logit) {
             double driveSpeed = driveNEOMotorEncoder.getVelocity();
             SmartDashboard.putNumber(name + " DriveSpeedMetersPerSecond", state.speedMetersPerSecond);
             SmartDashboard.putNumber(name + " DriveMotorRpmCommand", driveMotorRpm);
@@ -128,6 +140,7 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition() {
         double distance = driveNEOMotorEncoder.getPosition();
-        return new SwerveModulePosition(distance, new Rotation2d(Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValue())));
+        return new SwerveModulePosition(distance, new Rotation2d(Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValueAsDouble())));
     }
+
 }
