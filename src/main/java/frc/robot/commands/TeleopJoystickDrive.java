@@ -38,7 +38,7 @@ public class TeleopJoystickDrive extends Command {
 
     @Override
     public void initialize() {
-        drivetrain.resetPigeon();
+        drivetrain.resetPIgeonIMU();
     }
 
     @Override

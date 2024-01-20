@@ -7,8 +7,6 @@ package frc.robot.subsystems.DriveTrain;
 import java.util.List;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -50,7 +48,6 @@ public class SwerveDrive extends SubsystemBase {
 
     //public final GyroWrapperADIS16470_IMU imuADIS16470 = new GyroWrapperADIS16470_IMU();
 
-    PigeonIMU gyroPigeonIMU = new PigeonIMU(Constants.DriveConstants.PIGEON_IMU_ID);
     Pigeon2 gyroPigeon2 = new Pigeon2(Constants.DriveConstants.PIGEON_2_ID);
 
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontWheelLoc, rightFrontWheelLoc,
@@ -169,8 +166,9 @@ public class SwerveDrive extends SubsystemBase {
      */
     public Rotation2d getHeading() {
 
+        //Rotation2d heading = Rotation2d.fromDegrees(gyroPigeon2.getYaw().getValueAsDouble());
         Rotation2d heading = Rotation2d.fromDegrees(gyroPigeon2.getYaw().getValueAsDouble());
-
+        
         // System.out.println( "getYComplementaryAngle = " + heading );
         // System.out.println( "getXComplementaryAngle = " +
         // imuADIS16470.getXComplementaryAngle() );
