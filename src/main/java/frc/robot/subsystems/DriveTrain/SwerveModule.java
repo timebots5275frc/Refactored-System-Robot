@@ -83,13 +83,13 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean logit, String name) {
 
-        double curSteerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValueAsDouble());
+        double curSteerAngleRadians = Math.toRadians(steerAngleEncoder.getAbsolutePosition().getValueAsDouble() * 360);
 
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(curSteerAngleRadians));
 
         // The output of the steerAnglePID becomes the steer motor rpm reference.
-        double steerMotorRpm = steerAnglePID.calculate(steerAngleEncoder.getAbsolutePosition().getValueAsDouble(),
+        double steerMotorRpm = steerAnglePID.calculate(steerAngleEncoder.getAbsolutePosition().getValueAsDouble() * 360,
                 state.angle.getDegrees());
 
         if (logit) {
@@ -97,7 +97,7 @@ public class SwerveModule {
             // SmartDashboard.putNumber("Drive OutputCurrent", driveMotor.current());
 
             SmartDashboard.putNumber(name + " steerAngleEncoder.getAbsolutePosition()",
-                    steerAngleEncoder.getAbsolutePosition().getValueAsDouble());
+                    steerAngleEncoder.getAbsolutePosition().getValueAsDouble() * 360);
             SmartDashboard.putNumber(name + " SteerMotorRpmCommand", steerMotorRpm);
             SmartDashboard.putNumber(name + " SteerPIDdegrees", state.angle.getDegrees());
         }
