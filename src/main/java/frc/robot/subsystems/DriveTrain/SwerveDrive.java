@@ -38,8 +38,7 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveModule rightRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.RIGHT_REAR_STEER_ENCODER_ID);
   private final SwerveModule leftRearSwerveModule = new SwerveModule(DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_DRIVE_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_MOTOR_ID, DriveConstants.ROBOT_SWERVE_CAN.LEFT_REAR_STEER_ENCODER_ID);
   
-  //Pigeon2 pigeon2Gyro = new Pigeon2(DriveConstants.PIGEON_2_ID);
-  PigeonIMU pigeonGyro = new PigeonIMU(DriveConstants.PIGEON_IMU_ID);
+  Pigeon2 pigeon2Gyro = new Pigeon2(DriveConstants.PIGEON_2_ID);
 
 public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontWheelLocation, rightFrontWheelLocation, rightRearWheelLocation, leftRearWheelLocation);
     
@@ -119,8 +118,7 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
     }
 
     public void resetPigeon() {
-        //pigeon2Gyro.setYaw(0);
-        pigeonGyro.setYaw(0);
+        pigeon2Gyro.setYaw(0);
     }
 
     /**
@@ -131,8 +129,7 @@ public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFr
      */
     public Rotation2d getHeading() {
 
-        //Rotation2d heading = Rotation2d.fromDegrees(pigeon2Gyro.getYaw().getValueAsDouble());
-        Rotation2d heading = Rotation2d.fromDegrees(pigeonGyro.getYaw());
+        Rotation2d heading = Rotation2d.fromDegrees(pigeon2Gyro.getYaw().getValueAsDouble());
 
         // System.out.println( "getYComplementaryAngle = " + heading );
         // System.out.println( "getXComplementaryAngle = " +
