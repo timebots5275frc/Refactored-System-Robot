@@ -18,7 +18,10 @@ public class Vision extends SubsystemBase {
   private long valuesGotten = 0; // yucky
 
   private Vector3 avgTargetPosInRobotSpace;
-  private Vector3[] targetPosInRobotSpaceValues = new Vector3[VisionConstants.VALUES_TO_AVERAGE]; // controls how many values are averaged
+  private Vector3[] targetPosInRobotSpaceValues = new Vector3[VisionConstants.VALUES_TO_AVERAGE];
+
+  private Vector3 avgTargetRotInRobotSpace;
+  private Vector3[] targetRotInRobotSpaceValues = new Vector3[VisionConstants.VALUES_TO_AVERAGE];
 
   /** Creates a new Vision. */
   public Vision() 
@@ -36,17 +39,19 @@ public class Vision extends SubsystemBase {
     aprilTagID = (int)NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(-1.0);
     horizontalOffsetFromTarget = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
-    CalculateTargetPosInRobotSpace();
+    CalculateTargetTransformInRobotSpace();
 
     LogData();
     valuesGotten++;
   }
 
-  void CalculateTargetPosInRobotSpace()
+  void CalculateTargetTransformInRobotSpace()
   {
     double[] vals = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
     slideVector3IntoArray(new Vector3(vals[0], vals[2], vals[4]), targetPosInRobotSpaceValues);
+    slideVector3IntoArray(new Vector3(vals[1], vals[3], vals[5]), targetRotInRobotSpaceValues);
     avgTargetPosInRobotSpace = getAverageOfArray(targetPosInRobotSpaceValues);
+    avgTargetRotInRobotSpace = getAverageOfArray(targetRotInRobotSpaceValues);
   }
 
   void slideVector3IntoArray(Vector3 newVal, Vector3[] array) // java passes arrays by ref apparrently???
@@ -80,11 +85,13 @@ public class Vision extends SubsystemBase {
   {
     SmartDashboard.putString("Detected AprilTagID", aprilTagID == -1 ? "None" : String.valueOf(aprilTagID));
     SmartDashboard.putString("Target position in Robot Space", aprilTagID == -1 ? "N/A" : avgTargetPosInRobotSpace.toString());
+    SmartDashboard.putString("Target rotation in Robot Space", aprilTagID == -1 ? "N/A" : avgTargetRotInRobotSpace.toString());
     SmartDashboard.putString("Target horizontal offset", aprilTagID == -1 ? "N/A" : String.valueOf(horizontalOffsetFromTarget));
   }
 
   // Getter methods //
   public int AprilTagID() { return aprilTagID; }
   public Vector3 TargetPosInRobotSpace() { return avgTargetPosInRobotSpace; }
+  public Vector3 TargetRotInRobotSpace() { return avgTargetRotInRobotSpace; }
   public double HorizontalOffsetFromTarget() { return horizontalOffsetFromTarget; }
 }

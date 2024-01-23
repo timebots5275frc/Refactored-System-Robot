@@ -17,7 +17,13 @@ public class VisionDriveCalculator {
 
     public static Vector2 GetDirectionToAprilTagOffset(Vector2 aprilTagOffset)
     {
-        Vector2 targetOffsetRelativeToRobot = new Vector2(vision.TargetPosInRobotSpace().x, vision.TargetPosInRobotSpace().z);
+        if (vision.hasValidData())
+        {
+            Vector2 aprilTagOffsetInRobotSpace = Vector2.rotate(aprilTagOffset, Math.toRadians(vision.TargetRotInRobotSpace().y));
+            Vector2 targetPositionInRobotSpace = new Vector2(vision.TargetPosInRobotSpace().x, vision.TargetPosInRobotSpace().z).add(aprilTagOffsetInRobotSpace);
+
+            return Vector2.clampMagnitude(targetPositionInRobotSpace, 1);
+        }
 
         return Vector2.zero;
     }
