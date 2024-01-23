@@ -4,16 +4,23 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CustomTypes.Math.Vector2;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
+import frc.robot.subsystems.Vision.VisionDriveCalculator;
 
 public class VisionFollowAprilTag extends Command {
   
   SwerveDrive swerveDrive;
 
+  static Vector2 FollowOffset = new Vector2(0.8, 0);
+
   public VisionFollowAprilTag(SwerveDrive swerveDrive) {
     this.swerveDrive = swerveDrive;
+
+    addRequirements(swerveDrive);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +31,15 @@ public class VisionFollowAprilTag extends Command {
   @Override
   public void execute()
   {
-    
+    double turnSpeed = .8;
+    double driveSpeed = .5;
+
+    double rotationVelocity = VisionDriveCalculator.rotateTowardsTarget() * turnSpeed;
+    Vector2 moveVelocity = VisionDriveCalculator.GetDirectionToAprilTagOffset(FollowOffset).times(driveSpeed);
+
+    SmartDashboard.putString("Move veloctiy", moveVelocity.toString());
+
+    //swerveDrive.drive(moveVelocity.x, moveVelocity.y, rotationVelocity, false);
   }
 
   // Called once the command ends or is interrupted.

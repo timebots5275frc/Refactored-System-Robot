@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TeleopJoystickDrive;
+import frc.robot.commands.VisionFollowAprilTag;
 import frc.robot.commands.VisionRotateTowardAprilTag;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
 import frc.robot.subsystems.Vision.Vision;
@@ -22,8 +23,9 @@ public class RobotContainer {
   Joystick driveJoystick = new Joystick(0);
   Joystick sillyJoystick = new Joystick(1);
 
-  //TeleopJoystickDrive joystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
-  VisionRotateTowardAprilTag rotateTowardAprilTagCommand = new VisionRotateTowardAprilTag(swerveDrive, vision, driveJoystick);
+  TeleopJoystickDrive joystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
+  //VisionRotateTowardAprilTag rotateTowardAprilTagCommand = new VisionRotateTowardAprilTag(swerveDrive, vision, driveJoystick);
+  //VisionFollowAprilTag followAprilTagCommand = new VisionFollowAprilTag(swerveDrive);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -41,8 +43,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    swerveDrive.setDefaultCommand(joystickDriveCommand);
     //swerveDrive.setDefaultCommand(rotateTowardAprilTagCommand);
-    swerveDrive.setDefaultCommand(rotateTowardAprilTagCommand);
+    //swerveDrive.setDefaultCommand(followAprilTagCommand);
   }
 
   /**

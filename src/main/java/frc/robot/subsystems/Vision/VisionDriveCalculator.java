@@ -10,9 +10,7 @@ public class VisionDriveCalculator {
 
     public static double rotateTowardsTarget()
     {
-        final double rotSpeed = .5f;
-
-        return -SillyMath.clamp(vision.HorizontalOffsetFromTarget() / 15, -1, 1) * rotSpeed;
+        return -SillyMath.clamp(vision.HorizontalOffsetFromTarget() / 15, -1, 1);
     }
 
     public static Vector2 GetDirectionToAprilTagOffset(Vector2 aprilTagOffset)
@@ -20,7 +18,8 @@ public class VisionDriveCalculator {
         if (vision.hasValidData())
         {
             Vector2 aprilTagOffsetInRobotSpace = Vector2.rotate(aprilTagOffset, Math.toRadians(vision.TargetRotInRobotSpace().y));
-            Vector2 targetPositionInRobotSpace = new Vector2(vision.TargetPosInRobotSpace().x, vision.TargetPosInRobotSpace().z).add(aprilTagOffsetInRobotSpace);
+            Vector2 aprilTagInRobotSpace = new Vector2(vision.TargetPosInRobotSpace().x, vision.TargetPosInRobotSpace().z);
+            Vector2 targetPositionInRobotSpace = aprilTagInRobotSpace.add(aprilTagOffsetInRobotSpace);
 
             return Vector2.clampMagnitude(targetPositionInRobotSpace, 1);
         }

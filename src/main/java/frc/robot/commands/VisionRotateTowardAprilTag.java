@@ -33,14 +33,7 @@ public class VisionRotateTowardAprilTag extends Command {
   @Override
   public void execute() {
 
-    if(vision.AprilTagID() != -1)
-    {
-      swerveDrive.drive(0, 0, VisionDriveCalculator.rotateTowardsTarget(), false);
-    }
-    else
-    {
-      swerveDrive.drive(0, 0, 0, false);
-    }
+    swerveDrive.drive(0, 0, VisionDriveCalculator.rotateTowardsTarget(), false);
   }
 
   // Called once the command ends or is interrupted.

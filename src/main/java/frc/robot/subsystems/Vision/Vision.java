@@ -31,6 +31,7 @@ public class Vision extends SubsystemBase {
     for(int i = 0; i < VisionConstants.VALUES_TO_AVERAGE; i++)
     {
       targetPosInRobotSpaceValues[i] = Vector3.zero;
+      targetRotInRobotSpaceValues[i] = Vector3.zero;
     }
   }
 
@@ -48,8 +49,8 @@ public class Vision extends SubsystemBase {
   void CalculateTargetTransformInRobotSpace()
   {
     double[] vals = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
-    slideVector3IntoArray(new Vector3(vals[0], vals[2], vals[4]), targetPosInRobotSpaceValues);
-    slideVector3IntoArray(new Vector3(vals[1], vals[3], vals[5]), targetRotInRobotSpaceValues);
+    slideVector3IntoArray(new Vector3(vals[0], vals[1], vals[2]), targetPosInRobotSpaceValues);
+    slideVector3IntoArray(new Vector3(vals[3], vals[4], vals[5]), targetRotInRobotSpaceValues);
     avgTargetPosInRobotSpace = getAverageOfArray(targetPosInRobotSpaceValues);
     avgTargetRotInRobotSpace = getAverageOfArray(targetRotInRobotSpaceValues);
   }
