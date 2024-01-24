@@ -66,6 +66,11 @@ public class Vector2{
         return "(" + x + ", " + y + ")";
     }
 
+    public String toString(int decimals) {
+        double mult = Math.pow(10, decimals);
+        return "(" + (int)(x * mult) / mult + ", " + (int)(y * mult) / mult + ")";
+    }
+
     public static Vector2 rotate(Vector2 v, double delta) {
         return new Vector2(
             v.x * Math.cos(delta) - v.y * Math.sin(delta),

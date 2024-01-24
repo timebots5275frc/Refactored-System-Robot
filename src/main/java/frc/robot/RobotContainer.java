@@ -23,9 +23,9 @@ public class RobotContainer {
   Joystick driveJoystick = new Joystick(0);
   Joystick sillyJoystick = new Joystick(1);
 
-  TeleopJoystickDrive joystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
+  //TeleopJoystickDrive joystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
   //VisionRotateTowardAprilTag rotateTowardAprilTagCommand = new VisionRotateTowardAprilTag(swerveDrive, vision, driveJoystick);
-  //VisionFollowAprilTag followAprilTagCommand = new VisionFollowAprilTag(swerveDrive);
+  VisionFollowAprilTag followAprilTagCommand = new VisionFollowAprilTag(swerveDrive);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,9 +43,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    swerveDrive.setDefaultCommand(joystickDriveCommand);
+    //swerveDrive.setDefaultCommand(joystickDriveCommand);
     //swerveDrive.setDefaultCommand(rotateTowardAprilTagCommand);
-    //swerveDrive.setDefaultCommand(followAprilTagCommand);
+    swerveDrive.setDefaultCommand(followAprilTagCommand);
   }
 
   /**

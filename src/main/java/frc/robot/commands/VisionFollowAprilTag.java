@@ -31,15 +31,16 @@ public class VisionFollowAprilTag extends Command {
   @Override
   public void execute()
   {
-    double turnSpeed = .8;
+    double turnSpeed = 1.2;
     double driveSpeed = .5;
 
     double rotationVelocity = VisionDriveCalculator.rotateTowardsTarget() * turnSpeed;
     Vector2 moveVelocity = VisionDriveCalculator.GetDirectionToAprilTagOffset(FollowOffset).times(driveSpeed);
 
-    SmartDashboard.putString("Move veloctiy", moveVelocity.toString());
+    SmartDashboard.putString("Move veloctiy", moveVelocity.toString(3));
 
-    //swerveDrive.drive(moveVelocity.x, moveVelocity.y, rotationVelocity, false);
+    //swerveDrive.drive(0, 0, rotationVelocity, false);
+    swerveDrive.drive(moveVelocity.x, moveVelocity.y, 0, false);
   }
 
   // Called once the command ends or is interrupted.

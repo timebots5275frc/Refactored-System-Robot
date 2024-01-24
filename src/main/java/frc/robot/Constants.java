@@ -126,6 +126,7 @@ import edu.wpi.first.wpilibj.DriverStation;
   }
 
   public static final class VisionConstants {
+    public static final boolean ENABLE_LIMELIGHT_LIGHT_ON_ENABLE = true;
     public static final int VALUES_TO_AVERAGE = 3;
 
     public static enum AprilTag
