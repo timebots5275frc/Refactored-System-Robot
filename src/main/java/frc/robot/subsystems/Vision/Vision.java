@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.Vision;
 
+import java.util.ArrayList;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,24 +17,16 @@ public class Vision extends SubsystemBase {
   private int aprilTagID = -1;
   private double horizontalOffsetFromAprilTag;
 
-  private long valuesGotten = 0; // yucky
-
   private Vector3 avgAprilTagPosInRobotSpace;
-  private Vector3[] AprilTagPosInRobotSpaceValues = new Vector3[VisionConstants.VALUES_TO_AVERAGE];
+  private ArrayList<Vector3> aprilTagPosInRobotSpaceValues = new ArrayList<Vector3>();
 
   private Vector3 avgAprilTagRotInRobotSpace;
-  private Vector3[] aprilTagRotInRobotSpaceValues = new Vector3[VisionConstants.VALUES_TO_AVERAGE];
+  private ArrayList<Vector3> aprilTagRotInRobotSpaceValues = new ArrayList<Vector3>();
 
   /** Creates a new Vision. */
   public Vision() 
   {
     VisionDriveCalculator.SetVisionReference(this);
-
-    for(int i = 0; i < VisionConstants.VALUES_TO_AVERAGE; i++)
-    {
-      AprilTagPosInRobotSpaceValues[i] = Vector3.zero;
-      aprilTagRotInRobotSpaceValues[i] = Vector3.zero;
-    }
   }
 
   public void onRobotDisable()
@@ -55,46 +48,49 @@ public class Vision extends SubsystemBase {
     aprilTagID = (int)NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(-1.0);
     horizontalOffsetFromAprilTag = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
-    CalculateTargetTransformInRobotSpace();
+    if (aprilTagID != -1)
+    {
+      CalculateTargetTransformInRobotSpace();
+    }
+    else
+    {
+      ClearAprilTagData();
+    }
 
     LogData();
-    valuesGotten++;
   }
 
   void CalculateTargetTransformInRobotSpace()
   {
     double[] vals = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
-    slideVector3IntoArray(new Vector3(vals[0], vals[1], vals[2]), AprilTagPosInRobotSpaceValues);
-    slideVector3IntoArray(new Vector3(vals[3], vals[4], vals[5]), aprilTagRotInRobotSpaceValues);
-    avgAprilTagPosInRobotSpace = getAverageOfArray(AprilTagPosInRobotSpaceValues);
-    avgAprilTagRotInRobotSpace = getAverageOfArray(aprilTagRotInRobotSpaceValues);
+    addVector3ToArrayList(new Vector3(vals[0], vals[1], vals[2]), aprilTagPosInRobotSpaceValues);
+    addVector3ToArrayList(new Vector3(vals[3], vals[4], vals[5]), aprilTagRotInRobotSpaceValues);
+    avgAprilTagPosInRobotSpace = getAverageOfArrayList(aprilTagPosInRobotSpaceValues);
+    avgAprilTagRotInRobotSpace = getAverageOfArrayList(aprilTagRotInRobotSpaceValues);
   }
 
-  void slideVector3IntoArray(Vector3 newVal, Vector3[] array) // java passes arrays by ref apparrently???
+  void addVector3ToArrayList(Vector3 newVal, ArrayList<Vector3> arrayList)
   {
-    for (int i = array.length - 2; i > 0; i--)
-    {
-      array[i] = array[i - 1];
-    }
-
-    array[0] = newVal;
+    arrayList.add(0, newVal);
+    if (arrayList.size() > VisionConstants.VALUES_TO_AVERAGE) {arrayList.remove(arrayList.size() - 1); }
   }
 
-  Vector3 getAverageOfArray(Vector3[] array)
+  Vector3 getAverageOfArrayList(ArrayList<Vector3> arrayList)
   {
     Vector3 out = Vector3.zero;
 
-    for (int i = 0; i < array.length; i++)
+    for (int i = 0; i < arrayList.size(); i++)
     {
-      out = out.add(array[i]);
+      out = out.add(arrayList.get(i));
     }
 
-    return out.divideBy(array.length);
+    if (arrayList.size() == 0) { return Vector3.zero; }
+    return out.divideBy(arrayList.size());
   }
 
   public boolean hasValidData()
   {
-    return aprilTagID != -1 && valuesGotten > VisionConstants.VALUES_TO_AVERAGE;
+    return aprilTagID != -1;
   }
 
   void LogData()
@@ -103,6 +99,12 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putString("AprilTag position in Robot Space", aprilTagID == -1 ? "N/A" : avgAprilTagPosInRobotSpace.toString(3));
     SmartDashboard.putString("AprilTag rotation in Robot Space", aprilTagID == -1 ? "N/A" : avgAprilTagRotInRobotSpace.toString(3));
     SmartDashboard.putString("AprilTag horizontal offset", aprilTagID == -1 ? "N/A" : String.valueOf(horizontalOffsetFromAprilTag));
+  }
+
+  void ClearAprilTagData()
+  {
+    aprilTagPosInRobotSpaceValues.clear();
+    aprilTagRotInRobotSpaceValues.clear();
   }
 
   public void ToggleLimelightLight(boolean on)

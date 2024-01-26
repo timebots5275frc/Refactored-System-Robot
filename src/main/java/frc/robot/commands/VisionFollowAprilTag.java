@@ -15,7 +15,7 @@ public class VisionFollowAprilTag extends Command {
   
   SwerveDrive swerveDrive;
 
-  static Vector2 FollowOffset = new Vector2(0.8, 0);
+  static Vector2 FollowOffset = new Vector2(0, 1);
 
   public VisionFollowAprilTag(SwerveDrive swerveDrive) {
     this.swerveDrive = swerveDrive;
@@ -32,15 +32,16 @@ public class VisionFollowAprilTag extends Command {
   public void execute()
   {
     double turnSpeed = 1.2;
-    double driveSpeed = .5;
+    double driveSpeed = 1;
 
     double rotationVelocity = VisionDriveCalculator.rotateTowardsTarget() * turnSpeed;
     Vector2 moveVelocity = VisionDriveCalculator.GetDirectionToAprilTagOffset(FollowOffset).times(driveSpeed);
 
-    SmartDashboard.putString("Move veloctiy", moveVelocity.toString(3));
+    SmartDashboard.putString("AT Rotation velocity", rotationVelocity + "");
+    SmartDashboard.putString("AT Move velocity", moveVelocity.toString(3));
 
     //swerveDrive.drive(0, 0, rotationVelocity, false);
-    swerveDrive.drive(moveVelocity.x, moveVelocity.y, 0, false);
+    swerveDrive.drive(moveVelocity.x, moveVelocity.y, rotationVelocity, false);
   }
 
   // Called once the command ends or is interrupted.

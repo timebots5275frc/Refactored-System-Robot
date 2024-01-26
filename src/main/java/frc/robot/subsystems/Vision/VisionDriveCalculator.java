@@ -18,7 +18,7 @@ public class VisionDriveCalculator {
     {
         if (vision.hasValidData())
         {
-            Vector2 aprilTagOffsetInRobotSpace = Vector2.rotate(aprilTagOffset, Math.toRadians(vision.AprilTagRotInRobotSpace().y + 45));
+            Vector2 aprilTagOffsetInRobotSpace = Vector2.rotate(aprilTagOffset, Math.toRadians(vision.AprilTagRotInRobotSpace().y -180));
             Vector2 aprilTagInRobotSpace = new Vector2(vision.AprilTagPosInRobotSpace().x, vision.AprilTagPosInRobotSpace().z);
             Vector2 targetPositionInRobotSpace = aprilTagInRobotSpace.add(aprilTagOffsetInRobotSpace);
 
