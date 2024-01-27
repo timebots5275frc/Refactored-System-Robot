@@ -8,4 +8,10 @@ public class SillyMath {
 
         return in;
     }
+
+    public static double goodSqrt(double in)
+    {
+        if (in >= 0) { return Math.sqrt(in); }
+        else { return -Math.sqrt(-in); }
+    }
 }
