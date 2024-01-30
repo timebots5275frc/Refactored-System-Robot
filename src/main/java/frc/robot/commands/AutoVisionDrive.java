@@ -31,6 +31,11 @@ public class AutoVisionDrive extends Command {
   }
 
   @Override
+  public void initialize() {
+      SmartDashboard.putString("Auto Vision Drive Target", offset.toString(3));
+  }
+
+  @Override
   public void execute()
   {
     VisionDriveCalculator.AprilTagMoveVelocity moveDirection = VisionDriveCalculator.GetVelocityToAprilTagOffset(offset);
@@ -47,6 +52,7 @@ public class AutoVisionDrive extends Command {
     {
       swerveDrive.drive(0, 0, 0, false);
       madeItToTarget = true;
+      SmartDashboard.putString("Auto Vision Drive Target", "None");
     }
     else
     {
