@@ -1,7 +1,6 @@
 package frc.robot.subsystems.Vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.CustomTypes.Math.SillyMath;
 import frc.robot.CustomTypes.Math.Vector2;
 
@@ -15,11 +14,12 @@ public class VisionDriveCalculator {
         return -SillyMath.clamp(vision.HorizontalOffsetFromAprilTag() / 22, -1, 1);
     }
 
-    public static Vector2 GetVelocityToAprilTagOffset(Vector2 aprilTagOffset)
+    public static AprilTagMoveVelocity GetVelocityToAprilTagOffset(Vector2 aprilTagOffset)
     {
         if (vision.hasValidData())
         {
-            Vector2 aprilTagOffsetInRobotSpace = Vector2.rotate(aprilTagOffset, Math.toRadians(vision.AprilTagRotInRobotSpace().y + 180));
+            Vector2 adjustedAprilTagOffset = new Vector2(-aprilTagOffset.x, aprilTagOffset.y); // needed because otherwise doesnt work right for some reason
+            Vector2 aprilTagOffsetInRobotSpace = Vector2.rotate(adjustedAprilTagOffset, Math.toRadians(vision.AprilTagRotInRobotSpace().y + 180));
             Vector2 aprilTagInRobotSpace = new Vector2(vision.AprilTagPosInRobotSpace().x, vision.AprilTagPosInRobotSpace().z);
             Vector2 targetPositionInRobotSpace = aprilTagInRobotSpace.add(aprilTagOffsetInRobotSpace);
 
@@ -28,17 +28,28 @@ public class VisionDriveCalculator {
             SmartDashboard.putString("Target Position in Robot Space", targetPositionInRobotSpace.toString(3));
             SmartDashboard.putNumber("Magnientuecd", targetPositionInRobotSpace.magnitude());
 
-            return ApplyEasingToVector2(targetPositionInRobotSpace);
+            return new AprilTagMoveVelocity(ApplyEasingToVector2(targetPositionInRobotSpace), targetPositionInRobotSpace.magnitude());
         }
 
-        return Vector2.zero;
+        return new AprilTagMoveVelocity(Vector2.zero, 0);
     }
 
     static Vector2 ApplyEasingToVector2(Vector2 direction)
     {
         double sqrtMagnitude = Math.sqrt(direction.magnitude() + 1) - 1;
-        //double sqrtMagnitude = Math.pow(direction.magnitude() + 1, .9999) - 1;
 
         return direction.normalized().times(sqrtMagnitude);
+    }
+
+    public static class AprilTagMoveVelocity
+    {
+        public Vector2 velocity;
+        public double distanceFromTarget;
+
+        public AprilTagMoveVelocity(Vector2 velocity, double distanceFromTarget)
+        {
+            this.velocity = velocity;
+            this.distanceFromTarget = distanceFromTarget;
+        }
     }
 }

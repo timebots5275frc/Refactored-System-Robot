@@ -5,14 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.CustomTypes.Math.Vector2;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TeleopJoystickDrive;
-import frc.robot.commands.VisionFollowAprilTag;
-import frc.robot.commands.VisionRotateTowardAprilTag;
+import frc.robot.commands.AutoVisionDrive;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
 import frc.robot.subsystems.Vision.Vision;
+import frc.robot.subsystems.Vision.VisionFollowAprilTag;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -23,13 +25,14 @@ public class RobotContainer {
   Joystick driveJoystick = new Joystick(0);
   Joystick sillyJoystick = new Joystick(1);
 
-  //TeleopJoystickDrive joystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
-  //VisionRotateTowardAprilTag rotateTowardAprilTagCommand = new VisionRotateTowardAprilTag(swerveDrive, vision, driveJoystick);
-  VisionFollowAprilTag followAprilTagCommand = new VisionFollowAprilTag(swerveDrive);
+  TeleopJoystickDrive teleopJoystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
+
+  AutoVisionDrive visionDrivePoint1 = new AutoVisionDrive(swerveDrive, vision, new Vector2(-.5, 1));
+  AutoVisionDrive visionDrivePoint2 = new AutoVisionDrive(swerveDrive, vision, new Vector2(.5, 1));
+  AutoVisionDrive visionDrivePoint3 = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2.5));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
     configureBindings();
   }
 
@@ -43,9 +46,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    //swerveDrive.setDefaultCommand(joystickDriveCommand);
-    //swerveDrive.setDefaultCommand(rotateTowardAprilTagCommand);
-    swerveDrive.setDefaultCommand(followAprilTagCommand);
+    swerveDrive.setDefaultCommand(teleopJoystickDriveCommand);
   }
 
   /**
@@ -54,6 +55,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return new SequentialCommandGroup(visionDrivePoint1, visionDrivePoint2, visionDrivePoint3);
   }
 }
