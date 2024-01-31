@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.io.Console;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CustomTypes.Math.Vector2;
@@ -15,19 +17,20 @@ import frc.robot.subsystems.Vision.VisionDriveCalculator;
 
 public class AutoVisionDrive extends Command {
 
-  static final double turnSpeed = 1.2;
-  static final double driveSpeed = 2;
+  static final double turnSpeed = 1.5;
+  static final double driveSpeed = 3;
 
   SwerveDrive swerveDrive;
   Vision vision;
   Vector2 offset;
 
-  boolean madeItToTarget = false;
+  public boolean madeItToTarget = false;
 
   public AutoVisionDrive(SwerveDrive swerveDrive, Vision vision, Vector2 offset) {
     this.swerveDrive = swerveDrive;
     this.vision = vision;
     this.offset = offset;
+    addRequirements(swerveDrive);
   }
 
   @Override
@@ -46,19 +49,20 @@ public class AutoVisionDrive extends Command {
 
     SmartDashboard.putString("AT Move velocity", moveVelocity.toString(3));
     SmartDashboard.putString("AT Rotation velocity", rotationVelocity + "");
+    SmartDashboard.putString("getSubsystem()", moveDirection.distanceFromTarget + "");
 
     // Check if made it to target position
-    if (moveDirection.distanceFromTarget <= VisionConstants.TARGET_POSITION_ALLOWED_ERROR)
+    if (moveDirection.validData && moveDirection.distanceFromTarget <= VisionConstants.TARGET_POSITION_ALLOWED_ERROR)
     {
       swerveDrive.drive(0, 0, 0, false);
       madeItToTarget = true;
-      SmartDashboard.putString("Auto Vision Drive Target", "None");
     }
-    else
+    else if (moveDirection.validData)
     {
       if (moveVelocity.magnitude() < .1) { moveVelocity = Vector2.zero; }
       swerveDrive.drive(moveVelocity.y, moveVelocity.x, rotationVelocity, false);
     }
+    else { swerveDrive.drive(0, 0, 0, false); }
   }
 
   @Override

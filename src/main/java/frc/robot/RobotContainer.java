@@ -10,12 +10,18 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.TeleopJoystickDrive;
 import frc.robot.commands.AutoVisionDrive;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
+import frc.robot.subsystems.Input.Input;
 import frc.robot.subsystems.Vision.Vision;
 import frc.robot.subsystems.Vision.VisionFollowAprilTag;
+
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
@@ -25,11 +31,18 @@ public class RobotContainer {
   Joystick driveJoystick = new Joystick(0);
   Joystick sillyJoystick = new Joystick(1);
 
-  TeleopJoystickDrive teleopJoystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, true);
+  Input input = new Input(driveJoystick);
+
+  TeleopJoystickDrive teleopJoystickDriveCommand = new TeleopJoystickDrive(swerveDrive, driveJoystick, input, true);
 
   AutoVisionDrive visionDrivePoint1 = new AutoVisionDrive(swerveDrive, vision, new Vector2(-.5, 1));
   AutoVisionDrive visionDrivePoint2 = new AutoVisionDrive(swerveDrive, vision, new Vector2(.5, 1));
   AutoVisionDrive visionDrivePoint3 = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2.5));
+
+  AutoVisionDrive visionDriveButton9 = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 1));
+  AutoVisionDrive visionDriveButton10 = new AutoVisionDrive(swerveDrive, vision, new Vector2(.5, 1));
+  AutoVisionDrive visionDriveButton11 = new AutoVisionDrive(swerveDrive, vision, new Vector2(-1, 1));
+  AutoVisionDrive visionDriveButton12 = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2.5));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,6 +60,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
     swerveDrive.setDefaultCommand(teleopJoystickDriveCommand);
+
+    new JoystickButton(driveJoystick, 9).onTrue(new RepeatCommand(visionDriveButton9).until(input.receivingJoystickInput));
+    new JoystickButton(driveJoystick, 10).onTrue(new RepeatCommand(visionDriveButton10).until(input.receivingJoystickInput));
+    new JoystickButton(driveJoystick, 11).onTrue(new RepeatCommand(visionDriveButton11).until(input.receivingJoystickInput));
+    new JoystickButton(driveJoystick, 12).onTrue(new RepeatCommand(visionDriveButton12).until(input.receivingJoystickInput));
   }
 
   /**

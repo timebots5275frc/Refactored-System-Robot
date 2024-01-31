@@ -28,28 +28,30 @@ public class VisionDriveCalculator {
             SmartDashboard.putString("Target Position in Robot Space", targetPositionInRobotSpace.toString(3));
             SmartDashboard.putNumber("Magnientuecd", targetPositionInRobotSpace.magnitude());
 
-            return new AprilTagMoveVelocity(ApplyEasingToVector2(targetPositionInRobotSpace), targetPositionInRobotSpace.magnitude());
+            return new AprilTagMoveVelocity(ApplyEasingToVector2(targetPositionInRobotSpace), targetPositionInRobotSpace.magnitude(), true);
         }
 
-        return new AprilTagMoveVelocity(Vector2.zero, 0);
+        return new AprilTagMoveVelocity(Vector2.zero, 0, false);
     }
 
     static Vector2 ApplyEasingToVector2(Vector2 direction)
     {
-        double sqrtMagnitude = Math.sqrt(direction.magnitude() + 1) - 1;
+        double easedMagnitude = Math.cbrt(direction.magnitude() + 1) - 1;
 
-        return direction.normalized().times(sqrtMagnitude);
+        return direction.normalized().times(easedMagnitude);
     }
 
     public static class AprilTagMoveVelocity
     {
         public Vector2 velocity;
         public double distanceFromTarget;
+        public boolean validData;
 
-        public AprilTagMoveVelocity(Vector2 velocity, double distanceFromTarget)
+        public AprilTagMoveVelocity(Vector2 velocity, double distanceFromTarget, boolean validData)
         {
             this.velocity = velocity;
             this.distanceFromTarget = distanceFromTarget;
+            this.validData = validData;
         }
     }
 }

@@ -12,24 +12,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
 import frc.robot.subsystems.Vision.VisionFollowAprilTag;
+import frc.robot.subsystems.Input.Input;
 import frc.robot.CustomTypes.Math.Vector2;
 
 public class TeleopJoystickDrive extends Command {
 
     private SwerveDrive drivetrain;
+    private Input input;
     private VisionFollowAprilTag vision_followAprilTag;
 
     private Joystick driveStick;
     private boolean fieldRelative;
-
-    private static final Vector2[] targetPositions = new Vector2[] {
-        new Vector2(0, 1),
-        new Vector2(.5, 1),
-        new Vector2(-.5, 1),
-        new Vector2(0, 2)
-    };
-
-    int currentTargetPos = -1;
 
     /**
      * Creates a new DefaultDrive.
@@ -37,9 +30,10 @@ public class TeleopJoystickDrive extends Command {
      * @param subsystem The drive subsystem this command wil run on.
      * @param joystick  The control input for driving
      */
-    public TeleopJoystickDrive(SwerveDrive _swerveDrive, Joystick _driveStick, boolean _fieldRelative) {
+    public TeleopJoystickDrive(SwerveDrive _swerveDrive, Joystick _driveStick, Input input_, boolean _fieldRelative) {
         this.drivetrain = _swerveDrive;
         this.driveStick = _driveStick;
+        this.input = input_;
         this.fieldRelative = _fieldRelative;
         this.vision_followAprilTag = new VisionFollowAprilTag(_swerveDrive);
 
@@ -58,50 +52,16 @@ public class TeleopJoystickDrive extends Command {
 
     @Override
     public void execute() {
-
-        double xSpeed = this.smartJoystick(driveStick.getY() * -1, Constants.ControllerConstants.DEADZONE_DRIVE) * Constants.DriveConstants.MAX_DRIVE_SPEED;
-        double ySpeed = this.smartJoystick(driveStick.getX() * -1, Constants.ControllerConstants.DEADZONE_DRIVE) * Constants.DriveConstants.MAX_DRIVE_SPEED;
-        double rotRate = this.smartJoystick(driveStick.getTwist() * -1, Constants.ControllerConstants.DEADZONE_STEER) * Constants.DriveConstants.MAX_TWIST_RATE;
-
+        Vector2 joystickInput = input.JoystickInput();
+        double joystickTwist = input.JoystickTwist();
         double throttle = (-driveStick.getThrottle() + 1) / 2; // between 0 and 1 = 0% and 100%
 
-        xSpeed *= throttle;
-        ySpeed *= throttle;
-        rotRate *= throttle;
+        Vector2 inputVelocity = joystickInput.times(throttle * Constants.DriveConstants.MAX_DRIVE_SPEED);
+        double inputRotationVelocity = joystickTwist * throttle * Constants.DriveConstants.MAX_TWIST_RATE;
         
         SmartDashboard.putNumber("Throttle teleJoy", throttle);
-        SmartDashboard.putNumber("xSpeed teleJoy smart", xSpeed);
-        SmartDashboard.putNumber("ySpeed teleJoy smart ", ySpeed);
-        SmartDashboard.putNumber("rotRate teleJoy smart ", rotRate);
 
-        if (driveStick.getRawButtonPressed(9)) { currentTargetPos = 0; }
-        if (driveStick.getRawButtonPressed(10)) { currentTargetPos = 1; }
-        if (driveStick.getRawButtonPressed(11)) { currentTargetPos = 2; }
-        if (driveStick.getRawButtonPressed(12)) { currentTargetPos = 3; }
-
-        if (ySpeed != 0 || xSpeed != 0) { currentTargetPos = -1; }
-
-        if (currentTargetPos != -1) { vision_followAprilTag.followWithOffset(targetPositions[currentTargetPos]); }
-        else { drivetrain.drive(xSpeed, ySpeed, rotRate, fieldRelative); }
-    }
-
-    /**
-     * 
-     * @param _in
-     * @param deadZoneSize between -1 and 1
-     * @return
-     */
-    public double smartJoystick(double _in, double deadZoneSize) {
-        if (Math.abs(_in) < deadZoneSize) {
-            return 0;
-        }
-
-        if (_in > 0) {
-            return (_in - deadZoneSize) / (1 - deadZoneSize);
-        } else if (_in < 0) {
-            return (_in + deadZoneSize) / (1 - deadZoneSize);
-        }
-        return 0;
+        drivetrain.drive(inputVelocity.x, inputVelocity.y, inputRotationVelocity, fieldRelative);
     }
 
     @Override
