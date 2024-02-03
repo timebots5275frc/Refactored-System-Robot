@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -43,6 +44,10 @@ public class RobotContainer {
   AutoVisionDrive visionDriveButton10 = new AutoVisionDrive(swerveDrive, vision, new Vector2(.5, 1));
   AutoVisionDrive visionDriveButton11 = new AutoVisionDrive(swerveDrive, vision, new Vector2(-1, 1));
   AutoVisionDrive visionDriveButton12 = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2.5));
+
+  AutoVisionDrive visionDriveNoteLeft = new AutoVisionDrive(swerveDrive, vision, new Vector2(-1.524, 2.2));
+  AutoVisionDrive visionDriveNoteMiddle = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2));
+  AutoVisionDrive visionDriveNoteRight = new AutoVisionDrive(swerveDrive, vision, new Vector2(1.524, 2.2));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -73,6 +78,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(visionDrivePoint1, visionDrivePoint2, visionDrivePoint3);
+    return new SequentialCommandGroup(visionDriveNoteLeft, new WaitCommand(2), visionDriveNoteMiddle, new WaitCommand(2), visionDriveNoteRight);
   }
 }
