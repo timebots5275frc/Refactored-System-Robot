@@ -4,17 +4,12 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.CustomTypes.Math.Vector2;
-import frc.robot.commands.Autos;
 import frc.robot.commands.TeleopJoystickDrive;
 import frc.robot.commands.AutoVisionDrive;
 import frc.robot.subsystems.DriveTrain.SwerveDrive;
 import frc.robot.subsystems.Input.Input;
 import frc.robot.subsystems.Vision.Vision;
-import frc.robot.subsystems.Vision.VisionFollowAprilTag;
-
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,10 +40,6 @@ public class RobotContainer {
   AutoVisionDrive visionDriveButton11 = new AutoVisionDrive(swerveDrive, vision, new Vector2(-1, 1));
   AutoVisionDrive visionDriveButton12 = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2.5));
 
-  AutoVisionDrive visionDriveNoteLeft = new AutoVisionDrive(swerveDrive, vision, new Vector2(-1.524, 2.2));
-  AutoVisionDrive visionDriveNoteMiddle = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2));
-  AutoVisionDrive visionDriveNoteRight = new AutoVisionDrive(swerveDrive, vision, new Vector2(1.524, 2.2));
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureBindings();
@@ -78,6 +69,13 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(visionDriveNoteLeft, new WaitCommand(2), visionDriveNoteMiddle, new WaitCommand(2), visionDriveNoteRight);
+    AutoVisionDrive visionDriveNoteLeft = new AutoVisionDrive(swerveDrive, vision, new Vector2(-1.35, 2.2));
+    AutoVisionDrive visionDriveNoteLMTransition = new AutoVisionDrive(swerveDrive, vision, new Vector2(-.762, 1.8));
+    AutoVisionDrive visionDriveNoteMiddle = new AutoVisionDrive(swerveDrive, vision, new Vector2(0, 2.2));
+    AutoVisionDrive visionDriveNoteMRTransition = new AutoVisionDrive(swerveDrive, vision, new Vector2(.762, 1.8));
+    AutoVisionDrive visionDriveNoteRight = new AutoVisionDrive(swerveDrive, vision, new Vector2(1.55, 2.2));
+
+    return new SequentialCommandGroup(visionDriveNoteLeft, new WaitCommand(2), visionDriveNoteLMTransition, visionDriveNoteMiddle, new WaitCommand(2), visionDriveNoteMRTransition, visionDriveNoteRight);
+    //return new SequentialCommandGroup(visionDriveNoteLeft, visionDriveNoteLMTransition, visionDriveNoteMiddle, visionDriveNoteMRTransition, visionDriveNoteRight);
   }
 }
